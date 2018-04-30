@@ -18,12 +18,20 @@ class llvmConan(ConanFile):
     options = {'shared': [True, False]}
     default_options = 'shared=False'
     short_paths = True
+    build_requires = "7z_installer/1.0@conan/stable"
 
     def extractFromUrl(self, url):
         self.output.info('download {}'.format(url))
         sources = os.path.basename(url)
         tools.download(url, sources)
-        tools.untargz(sources)
+        if self.settings.os != "Windows":
+            cmd = "tar -xJf {sources}".format(sources=sources)
+            self.run(cmd)
+        else:
+            cmd = "7z.exe e {sources}".format(sources=sources)
+            self.run(cmd)
+            tools.unzip(self.source_dir + ".tar", ".")
+            os.unlink(self.source_dir + ".tar")
         os.unlink(sources)
 
     def source(self):
