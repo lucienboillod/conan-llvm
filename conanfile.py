@@ -18,13 +18,16 @@ class llvmConan(ConanFile):
     options = {'shared': [True, False]}
     default_options = 'shared=False'
     short_paths = True
-    build_requires = "7z_installer/1.0@conan/stable"
 
+    def build_requirements(self):
+        if platform.system() == "Windows":
+            self.build_requires("7z_installer/1.0@conan/stable")
+            
     def extractFromUrl(self, url):
         self.output.info('download {}'.format(url))
         sources = os.path.basename(url)
         tools.download(url, sources)
-        if self.settings.os != "Windows":
+        if platform.system() != "Windows":
             cmd = "tar -xJf {sources}".format(sources=sources)
             self.run(cmd)
         else:
