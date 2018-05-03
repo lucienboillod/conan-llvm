@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from conans import ConanFile, CMake, tools
-import os
+import os, platform
 
 class llvmConan(ConanFile):
     name = "llvm"
