@@ -19,9 +19,6 @@ class llvmConan(ConanFile):
     default_options = 'shared=False'
     short_paths = True
 
-    def configure(self):
-        self.options.shared = False
-
     def build_requirements(self):
         if platform.system() == "Windows":
             self.build_requires("7z_installer/1.0@conan/stable")
@@ -48,7 +45,9 @@ class llvmConan(ConanFile):
         with tools.chdir(os.path.join(self.source_folder, self.source_dir)):
             cmake = CMake(self)
             cmake.verbose = True
-            if self.options.shared:
+            if not self.options.shared or platform.system() == "Windows":
+                cmake.definitions["BUILD_SHARED_LIBS"] = "OFF"
+            else:
                 cmake.definitions["BUILD_SHARED_LIBS"] = "ON"
             cmake.definitions["LIBCXX_INCLUDE_TESTS"] = "OFF"
             cmake.definitions["LIBCXX_INCLUDE_DOCS"] = "OFF"
