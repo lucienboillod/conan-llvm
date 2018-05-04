@@ -19,10 +19,13 @@ class llvmConan(ConanFile):
     default_options = 'shared=False'
     short_paths = True
 
+    def configure(self):
+        self.options.shared = False
+
     def build_requirements(self):
         if platform.system() == "Windows":
             self.build_requires("7z_installer/1.0@conan/stable")
-            
+
     def extractFromUrl(self, url):
         self.output.info('download {}'.format(url))
         sources = os.path.basename(url)
@@ -46,7 +49,7 @@ class llvmConan(ConanFile):
             cmake = CMake(self)
             cmake.verbose = True
             if self.options.shared:
-                cmake.definitions["BUILD_SHARED_LIBS"] = "ON"                
+                cmake.definitions["BUILD_SHARED_LIBS"] = "ON"
             cmake.definitions["LIBCXX_INCLUDE_TESTS"] = "OFF"
             cmake.definitions["LIBCXX_INCLUDE_DOCS"] = "OFF"
             cmake.definitions["LLVM_INCLUDE_TOOLS"] = "ON"
