@@ -45,10 +45,7 @@ class llvmConan(ConanFile):
         with tools.chdir(os.path.join(self.source_folder, self.source_dir)):
             cmake = CMake(self)
             cmake.verbose = True
-            if not self.options.shared or platform.system() == "Windows":
-                cmake.definitions["BUILD_SHARED_LIBS"] = "OFF"
-            else:
-                cmake.definitions["BUILD_SHARED_LIBS"] = "ON"
+            cmake.definitions["BUILD_SHARED_LIBS"] = "OFF"
             cmake.definitions["LIBCXX_INCLUDE_TESTS"] = "OFF"
             cmake.definitions["LIBCXX_INCLUDE_DOCS"] = "OFF"
             cmake.definitions["LLVM_INCLUDE_TOOLS"] = "ON"
