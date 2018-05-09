@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from conans import ConanFile, CMake, tools
-import os, platform
+import os, platform, svn.remote
 
 class llvmConan(ConanFile):
     name = "llvm"
@@ -36,6 +36,9 @@ class llvmConan(ConanFile):
             tools.unzip(self.source_dir + ".tar", ".")
             os.unlink(self.source_dir + ".tar")
         os.unlink(sources)
+        os.chdir(self.source_dir + '/tools')
+        r = svn.remote.RemoteClient('http://llvm.org/svn/llvm-project/cfe/trunk')
+        r.checkout('clang')
 
     def source(self):
         url = 'http://releases.llvm.org/' + self.version + '/llvm-' + self.version + '.src.tar.xz'
