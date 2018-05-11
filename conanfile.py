@@ -23,32 +23,39 @@ class llvmConan(ConanFile):
         if platform.system() == "Windows":
             self.build_requires("7z_installer/1.0@conan/stable")
 
-    def extractFromUrl(self, url):
+    def extractFromUrl(self, url, dest, name):
         self.output.info('download {}'.format(url))
-        sources = os.path.basename(url)
-        tools.download(url, sources)
+        sources = os.path.basename(url).rsplit('.', 2)[0]
+        tools.download(url, sources + '.tar.xz')
         if platform.system() != "Windows":
-            cmd = "tar -xJf {sources}".format(sources=sources)
+            cmd = "tar -xJf {sources}".format(sources=sources) + '.tar.xz'
             self.run(cmd)
         else:
-            cmd = "7z.exe e {sources}".format(sources=sources)
+            cmd = "7z.exe e {sources}".format(sources=sources) + '.tar.xz'
             self.run(cmd)
-            tools.unzip(self.source_dir + ".tar", ".")
-            os.unlink(self.source_dir + ".tar")
-        os.unlink(sources)
-        os.chdir(self.source_dir + '/tools')
-        r = svn.remote.RemoteClient('http://llvm.org/svn/llvm-project/cfe/trunk')
-        r.checkout('clang')
+            tools.unzip(sources + ".tar", dest)
+            os.unlink(sources + ".tar")
+        os.rename(dest + sources, dest + name)
+        os.unlink(sources + '.tar.xz')
 
     def source(self):
-        url = 'http://releases.llvm.org/' + self.version + '/llvm-' + self.version + '.src.tar.xz'
-        self.extractFromUrl(url)
+        llvm = 'http://releases.llvm.org/' + self.version + '/llvm-' + self.version + '.src.tar.xz'
+        clang = 'http://releases.llvm.org/' + self.version + '/cfe-' + self.version + '.src.tar.xz'
+        libcxx = 'http://releases.llvm.org/' + self.version + '/libcxx-' + self.version + '.src.tar.xz'
+        libcxxabi = 'http://releases.llvm.org/' + self.version + '/llvm-' + self.version + '.src.tar.xz'
+        clang_tools = 'http://releases.llvm.org/' + self.version + '/clang-tools-extra-' + self.version + '.src.tar.xz'
+        self.extractFromUrl(llvm, './', self.source_dir)
+        self.extractFromUrl(clang, self.source_dir + '/tools/', 'clang')
+        self.extractFromUrl(libcxx, self.source_dir + '/projects/' , 'libcxx')
+        self.extractFromUrl(libcxxabi, self.source_dir + '/projects/' , 'libcxxabi')
+        self.extractFromUrl(clang_tools, self.source_dir + '/tools/clang/tools/', 'extra')
 
     def build(self):
         with tools.chdir(os.path.join(self.source_folder, self.source_dir)):
             cmake = CMake(self)
             cmake.verbose = True
             cmake.definitions["BUILD_SHARED_LIBS"] = "OFF"
+            cmake.definitions["LLVM_ENABLE_LIBCXX"] = "ON"
             cmake.definitions["LIBCXX_INCLUDE_TESTS"] = "OFF"
             cmake.definitions["LIBCXX_INCLUDE_DOCS"] = "OFF"
             cmake.definitions["LLVM_INCLUDE_TOOLS"] = "ON"
