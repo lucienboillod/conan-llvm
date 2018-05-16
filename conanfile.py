@@ -42,7 +42,7 @@ class llvmConan(ConanFile):
         llvm = 'http://releases.llvm.org/' + self.version + '/llvm-' + self.version + '.src.tar.xz'
         clang = 'http://releases.llvm.org/' + self.version + '/cfe-' + self.version + '.src.tar.xz'
         libcxx = 'http://releases.llvm.org/' + self.version + '/libcxx-' + self.version + '.src.tar.xz'
-        libcxxabi = 'http://releases.llvm.org/' + self.version + '/llvm-' + self.version + '.src.tar.xz'
+        libcxxabi = 'http://releases.llvm.org/' + self.version + '/libcxxabi-' + self.version + '.src.tar.xz'
         clang_tools = 'http://releases.llvm.org/' + self.version + '/clang-tools-extra-' + self.version + '.src.tar.xz'
         self.extractFromUrl(llvm, './', self.source_dir)
         self.extractFromUrl(clang, self.source_dir + '/tools/', 'clang')
