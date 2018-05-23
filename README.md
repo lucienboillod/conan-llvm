@@ -1,4 +1,4 @@
-Conan package for Qt
+Conan package for LLVM
 -----------------------------------
 
 ## Package Status
