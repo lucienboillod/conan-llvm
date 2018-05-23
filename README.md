@@ -5,7 +5,7 @@ Conan package for Qt
 
 | Bintray | Windows | Linux & macOS |
 |:--------:|:---------:|:-----------------:|
-||||
+||[![Build status](https://ci.appveyor.com/api/projects/status/aq5cc90gqn8v8fyt/branch/master?svg=true)](https://ci.appveyor.com/project/lucienboillod/conan-llvm/branch/master)||
 
 ## Conan.io Information
 
