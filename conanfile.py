@@ -28,8 +28,8 @@ class llvmConan(ConanFile):
         sources = os.path.basename(url).rsplit('.', 2)[0]
         tools.download(url, sources + '.tar.xz')
         if platform.system() != "Windows":
-            cmd = "tar -xJf {sources}".format(sources=sources) + '.tar.xz'
-            self.run(cmd)
+            cmd = "tar -xJf {sources}".format(sources=sources) + '.tar.xz -C ' + dest
+            self.run(cmd)            
         else:
             cmd = "7z.exe e {sources}".format(sources=sources) + '.tar.xz'
             self.run(cmd)
